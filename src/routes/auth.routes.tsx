@@ -3,6 +3,8 @@ import express, {
     Request,
     Response
 } from 'express';
+import { AuthController } from '../controllers/auth.controller';
+import { IsAuthenticatedSession } from '../middlewares/auth.middleware';
 const passport = require('passport');
 const bodyParser = require('body-parser');
 
@@ -21,11 +23,6 @@ router.route('/assertion-consumer-service').post(
         response.redirect('/auth/greeting');
 });
 
-router.route('/greeting').get((request: Request, response: Response) => {
-    console.log(request);
-    response.status(200).json({
-        hello: 'world',
-    });
-});
+router.route('/greeting').get(IsAuthenticatedSession, AuthController.greetingUser);
 
 export default router;
