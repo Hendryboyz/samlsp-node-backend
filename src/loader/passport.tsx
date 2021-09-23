@@ -1,5 +1,7 @@
 const passport = require('passport');
+const fs = require('fs');
 
+const privateKey = fs.readFileSync('./assets/sp.pem', 'utf-8');
 export default () => {
     const SamlStrategy = require('passport-saml').Strategy;
     const authStrategy = new SamlStrategy({
@@ -8,7 +10,9 @@ export default () => {
         issuer: '<service-provider-issuer>',
         cert: '<identity-provider-certificate>',
         signatureAlgorithm: 'sha256',
-        digestAlgorithm: 'sha256'
+        digestAlgorithm: 'sha256',
+        // privateKey: privateKey, // not this
+        // decryptionPvk: privateKey, // the correct field to provide decryption private key
     }, (profile: any, done: any) => {
         done(null, {
             username: profile.nameID,
